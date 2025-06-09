@@ -1,17 +1,11 @@
 package acl4ssr
 
-func (ssr *ACL4SSR) ToClashRule(section, key string) {
-	if ssr.Err != nil {
-		return
-	}
+func (ssr *ACL4SSR) convertToClashRules() string {
 
-	ssr.loadRuleSet(section, key)
+	return ""
 }
 
-func (ssr *ACL4SSR) ToClashRuleProvider(section, key string) {
-	if ssr.Err != nil {
-		return
-	}
+func (ssr *ACL4SSR) convertToClashRuleProviders() string {
 
-	ssr.loadRuleSet(section, key)
+	return ""
 }
