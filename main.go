@@ -23,7 +23,7 @@ func main() {
 	originName := "oringin.ini"
 	_, err := os.Stat(originName)
 	if os.IsNotExist(err) {
-		cfg, err := fetchINI("https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/config/ACL4SSR_Online_Full_MultiMode.ini")
+		cfg, err := fetchINI("https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/config/ACL4SSR_Online_Full_AdblockPlus.ini")
 		if err != nil {
 			log.Fatalf("Fail to fetch ini: %v", err)
 		}
