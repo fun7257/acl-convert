@@ -2,6 +2,8 @@ package acl4ssr
 
 import (
 	"net/http"
+	"net/url"
+	"path"
 	"strings"
 
 	"gopkg.in/ini.v1"
@@ -55,4 +57,22 @@ func FetchINI(url string) *ACL4SSR {
 	ssr := &ACL4SSR{}
 	ssr.iniFile, ssr.e = ini.ShadowLoad(resp.Body)
 	return ssr
+}
+
+// getFileNameFromRawUrl 在url中获取文件名
+func getFileNameFromRawUrl(rawUrl string) (name string) {
+	parsedUrl, err := url.Parse(rawUrl)
+	if err != nil {
+		return
+	}
+
+	filePath := parsedUrl.Path
+	fileNameWithExt := path.Base(filePath)
+
+	// 使用 path.Ext 获取扩展名
+	ext := path.Ext(fileNameWithExt)
+
+	// 使用 strings.TrimSuffix 移除扩展名
+	name = strings.TrimSuffix(fileNameWithExt, ext)
+	return
 }
