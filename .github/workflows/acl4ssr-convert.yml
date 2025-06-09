@@ -1,22 +1,24 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
+name: ACL Convert
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
 on:
+  # 当有代码推送到 main 分支时触发
+  push:
+    branches:
+      - main
+  
+  # 手动触发
   workflow_dispatch:
-    # Inputs the workflow accepts.
-    inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
+
+  # 定时触发器
+  schedule:
+    # CRON 表达式使用 UTC 时间。
+    # 这个表达式表示在每周一的 08:00 (UTC) 触发。
+    - cron: '0 8 * * 1'
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,6 +29,41 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ inputs.name }}"
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.4'
+
+      - name: Build project
+        run: go build -v ./...
+      
+      - name: Generate config
+        id: generate_content
+        run: |
+          {
+            echo 'gist_content<<EOF'
+            echo ./acl-convert https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/config/ACL4SSR_Online_Full_AdblockPlus.ini
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update Gist
+        env:
+          # 从 Secrets 中读取 PAT 和 Gist ID，并设置为环境变量
+          GH_TOKEN: ${{ secrets.GIST_PAT }}
+          GIST_ID: ${{ secrets.GIST_ID }}
+        run: |
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/gists/$GIST_ID \
+            -d '{
+              "description": "Daily Joke Updater",
+              "files": {
+                "daily-update.md": {
+                  "content": "${{ steps.generate_content.outputs.gist_content }}"
+                }
+              }
+            }'
