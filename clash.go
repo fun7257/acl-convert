@@ -169,15 +169,13 @@ func (pgs ProxyGroups) Yaml() (out string) {
 			useBuilder.WriteString("use:\n")
 			for _, v := range v.Proxies {
 				// 写入每个列表项的缩进和短横线 "- "
+				useBuilder.WriteString("    ")
 				useBuilder.WriteString("  - ")
-
 				useBuilder.WriteString(v)
 				useBuilder.WriteString("\n")
-				builder.WriteString("    ")
 			}
 
 			builder.WriteString(useBuilder.String())
-			builder.WriteString("\n")
 			builder.WriteString("    ")
 		}
 
