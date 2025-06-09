@@ -37,7 +37,7 @@ jobs:
           go-version: '1.24.4'
 
       - name: Build project
-        run: go build -v ./...
+        run: go build -o acl-convert main.go
       
       - name: Generate config
         id: generate_content
