@@ -53,16 +53,24 @@ jobs:
           # 从 Secrets 中读取 PAT 和 Gist ID，并设置为环境变量
           GH_TOKEN: ${{ secrets.GIST_PAT }}
           GIST_ID: ${{ secrets.GIST_ID }}
+          YAML_CONTENT: ${{ steps.generate_content.outputs.gist_content }}
         run: |
+          json_payload=$(jq -n \
+            --arg content "$YAML_CONTENT" \
+            '{
+              "description": "Daily YAML Status Report",
+              "files": {
+                "ACL4SSR_Online_Full_AdblockPlus.yaml": {
+                  "content": $content
+                }
+              }
+            }')
+
+          # 现在，将这个格式完美的 JSON payload 发送给 API
+          # 注意 -d 后面现在是一个包含了转义后内容的变量
           curl -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/json" \
             https://api.github.com/gists/$GIST_ID \
-            -d '{
-              "description": "Daily Joke Updater",
-              "files": {
-                "ACL4SSR_Online_Full_AdblockPlus.yaml": {
-                  "content": "${{ steps.generate_content.outputs.gist_content }}"
-                }
-              }
-            }'
+            -d "$json_payload"
