@@ -1,4 +1,4 @@
-name: ACL4SSR_Online_Full_AdblockPlus Convert, Update Gist
+name: ACL4SSR_Online_Full_AdblockPlus
 
 on:
   # 当有代码推送到 main 分支时触发
