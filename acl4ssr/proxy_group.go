@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// convertToClashProxyGroups 将ACL4SSR代理组转换为Clash代理组配置
 func (ssr *ACL4SSR) convertToClashProxyGroups() string {
 	// 使用 strings.Builder 来高效构建字符串
 	var builder strings.Builder

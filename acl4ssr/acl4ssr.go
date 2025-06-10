@@ -9,6 +9,7 @@ import (
 	"gopkg.in/ini.v1"
 )
 
+// ACL4SSR 结构体用于处理ACL4SSR配置文件
 type ACL4SSR struct {
 	iniFile     *ini.File
 	rulesets    []string
@@ -17,6 +18,7 @@ type ACL4SSR struct {
 	e error
 }
 
+// LoadRuleSet 加载规则集
 func (ssr *ACL4SSR) LoadRuleSet(section, key string) *ACL4SSR {
 	if ssr.e == nil {
 		ssr.rulesets = ssr.iniFile.Section(section).Key(key).ValueWithShadows()
@@ -24,6 +26,7 @@ func (ssr *ACL4SSR) LoadRuleSet(section, key string) *ACL4SSR {
 	return ssr
 }
 
+// LoadProxyGroup 加载代理组
 func (ssr *ACL4SSR) LoadProxyGroup(section, key string) *ACL4SSR {
 	if ssr.e == nil {
 		ssr.proxyGroups = ssr.iniFile.Section(section).Key(key).ValueWithShadows()
@@ -31,6 +34,7 @@ func (ssr *ACL4SSR) LoadProxyGroup(section, key string) *ACL4SSR {
 	return ssr
 }
 
+// Clash 将ACL4SSR配置转换为Clash配置
 func (ssr *ACL4SSR) Clash() (out string, err error) {
 	if ssr.e != nil {
 		err = ssr.e
@@ -45,6 +49,7 @@ func (ssr *ACL4SSR) Clash() (out string, err error) {
 	return
 }
 
+// FetchINI 从URL获取INI配置文件
 func FetchINI(url string) *ACL4SSR {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -59,7 +64,7 @@ func FetchINI(url string) *ACL4SSR {
 	return ssr
 }
 
-// getFileNameFromRawUrl 在url中获取文件名
+// getFileNameFromRawUrl 从URL中获取文件名
 func getFileNameFromRawUrl(rawUrl string) (name string) {
 	parsedUrl, err := url.Parse(rawUrl)
 	if err != nil {

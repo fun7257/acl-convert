@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// convertToClashRules 将ACL4SSR规则转换为Clash规则配置
 func (ssr *ACL4SSR) convertToClashRules() string {
 	// 使用 strings.Builder 来高效构建字符串
 	var builder strings.Builder
@@ -41,6 +42,7 @@ func (ssr *ACL4SSR) convertToClashRules() string {
 	return builder.String()
 }
 
+// convertToClashRuleProviders 将ACL4SSR规则转换为Clash规则提供者配置
 func (ssr *ACL4SSR) convertToClashRuleProviders() string {
 	// 使用 strings.Builder 来高效构建字符串
 	var builder strings.Builder
